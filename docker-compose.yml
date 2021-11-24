@@ -1,0 +1,17 @@
+version: '3.4'
+services:
+  db:
+    image: postgres:latest
+    container_name: localpg
+    environment:
+      - POSTGRES_USER=pgUser
+      - POSTGRES_PASSWORD=docker
+      - POSTGRES_DB=mydb
+
+    ports:
+      - 5432:5432
+    volumes:
+      - postgresql-vol:/var/lib/postgresql/data
+volumes:
+  postgresql-vol:
+    external: true
