@@ -1,13 +1,45 @@
 package handlers
 
 import (
-	"crudProj/internal/file_uploader"
+	"crudProj/model"
+	"crudProj/pkg/services"
+	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"net/http"
+	"os"
 )
 
-func UploadFile(w http.ResponseWriter, r *http.Request){
+type FileHandler struct {
+	fileService services.FileServiceI
+}
+
+func NewFileHandler(fileService services.FileServiceI) *FileHandler {
+	return &FileHandler{
+		fileService: fileService,
+	}
+}
+
+type FileHandlerI interface {
+	UploadFil(w http.ResponseWriter, r *http.Request)
+	Test(w http.ResponseWriter, r *http.Request)
+}
+
+func (f FileHandler) Test(w http.ResponseWriter, r *http.Request) {
+	var scooter model.Test
+	err := json.NewDecoder(r.Body).Decode(&scooter)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusNotAcceptable)
+		return
+	}
+	err = f.fileService.TestService(&scooter)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusNotAcceptable)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+}
+
+func (f FileHandler)UploadFile(w http.ResponseWriter, r *http.Request){
 	fmt.Println("File Upload Endpoint Hit")
 
 	r.ParseMultipartForm(10 << 20)
@@ -22,21 +54,8 @@ func UploadFile(w http.ResponseWriter, r *http.Request){
 	fmt.Printf("File Size: %+v\n", handler.Size)
 	fmt.Printf("MIME Header: %+v\n", handler.Header)
 
-	fileBytes, err := ioutil.ReadAll(file)
-	if err != nil {
-		fmt.Println(err)
-	}
-	tempFile, err := ioutil.TempFile("./../internal/file_uploader/temp-files", "upload-*.сsv")
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	defer tempFile.Close()
-//	defer os.Remove(tempFile.Name())
-	tempFile.Write(fileBytes)
-
-	file_uploader.Pars(tempFile.Name())
-
+	filePath := f.fileService.InsertScootersToDb(file)
+	defer os.Remove(filePath)
 
 	fmt.Fprintf(w, "Successfully Uploaded File\n")
 }

@@ -6,11 +6,11 @@ import (
 )
 
 type ScooterServiceI interface {
-	CreateScooter(user *model.Scooter) (int, error)
+	CreateScooter(scooter *model.Scooter) (int, error)
 	GetScooters() (*[]model.Scooter, error)
-	GetScooterByID(userID int) (*model.Scooter, error)
+	GetScooterByID(scooterID int) (*model.Scooter, error)
 	GetScootersByBrand(brand string) (*model.Scooter, error)
-	EditScooter(user *model.Scooter) (int, error)
+	EditScooter(scooter *model.Scooter) (int, error)
 	DeleteScooter(id int) (int, error)
 }
 
@@ -25,47 +25,47 @@ type ScooterService struct {
 }
 
 func (s ScooterService) GetScooters() (*[]model.Scooter, error) {
-	users, err := s.scooterRepository.GetAll()
+	scooters, err := s.scooterRepository.GetAll()
 	if err != nil {
 		return nil, err
 	}
-	return users, nil
+	return scooters, nil
 }
 
-func (s ScooterService) CreateScooter(user *model.Scooter) (int, error) {
-	lastID, err := s.scooterRepository.Create(user)
+func (s ScooterService) CreateScooter(scooter *model.Scooter) (int, error) {
+	lastID, err := s.scooterRepository.Create(scooter)
 	if err != nil {
 		return 0, err
 	}
 	return lastID, nil
 }
 
-func (s ScooterService) GetScooterByID(userID int) (*model.Scooter, error) {
-	user, err := s.scooterRepository.GetByID(userID)
+func (s ScooterService) GetScooterByID(scooterID int) (*model.Scooter, error) {
+	scooter, err := s.scooterRepository.GetByID(scooterID)
 	if err != nil {
 		return nil, err
 	}
-	return user, nil
+	return scooter, nil
 }
 
-func (s ScooterService) GetScootersByBrand(email string) (*model.Scooter, error) {
-	user, err := s.scooterRepository.GetByBrand(email)
+func (s ScooterService) GetScootersByBrand(brand string) (*model.Scooter, error) {
+	scooter, err := s.scooterRepository.GetByBrand(brand)
 	if err != nil {
 		return nil, err
 	}
-	return user, nil
+	return scooter, nil
 }
 
-func (s ScooterService) EditScooter(user *model.Scooter) (int, error) {
-	rowsAffected, err := s.scooterRepository.Update(user)
+func (s ScooterService) EditScooter(scooter *model.Scooter) (int, error) {
+	rowsAffected, err := s.scooterRepository.Update(scooter)
 	if err != nil {
 		return 0, err
 	}
 	return rowsAffected, nil
 }
 
-func (s ScooterService) DeleteScooter(userID int) (int, error) {
-	rowsAffected, err := s.scooterRepository.Delete(userID)
+func (s ScooterService) DeleteScooter(scooterID int) (int, error) {
+	rowsAffected, err := s.scooterRepository.Delete(scooterID)
 	if err != nil {
 		return 0, err
 	}

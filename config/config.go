@@ -15,28 +15,23 @@ type Config struct {
 	DriverName 				string
 	DbHost    				string
 	DbPort    				string
-	PgTimeout  				int
 }
 
-func Get() *Config {
-/*	pgTimeout, err := strconv.Atoi(os.Getenv("PG_TIMEOUT"))
-	if err != nil {
-		log.Fatal("fail to load config", err)
-	}*/
 
+
+func Get() *Config {
 	err := godotenv.Load()
 	if err != nil {
 		log.Println(err)
 	}
 	config := Config {
-			DbUser:     os.Getenv("DATABASE_USER"),
-			DbPassword: os.Getenv("DATABASE_PASSWORD"),
-			DbName:     os.Getenv("DATABASE_NAME"),
+			DbUser:     os.Getenv("POSTGRES_USER"),
+			DbPassword: os.Getenv("POSTGRES_PASSWORD"),
+			DbName:     os.Getenv("POSTGRES_DB"),
 			DriverName: os.Getenv("DRIVER_NAME"),
-			DbHost:     os.Getenv("DATABASE_HOST"),
-			DbPort: 	os.Getenv("DATABASE_PORT"),
+			DbHost:     os.Getenv("POSTGRES_HOST"),
+			DbPort: 	os.Getenv("POSTGRES_PORT"),
 	}
-
 	configBytes, err := json.MarshalIndent(config, "", "  ")
 	if err != nil {
 		log.Fatal(err)

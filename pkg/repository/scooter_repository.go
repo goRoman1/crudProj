@@ -1,10 +1,10 @@
 package repository
 
 import (
+	"context"
 	"crudProj/model"
 	"github.com/jackc/pgx/v4"
 	_ "github.com/lib/pq"
-	"time"
 )
 
 type ScooterRepository struct {
@@ -27,30 +27,27 @@ type ScooterRepositoryI interface {
 }
 
 func (s ScooterRepository) GetAll() (*[]model.Scooter, error) {
-	var users []model.Scooter
-	rows, err := u.db.Query("SELECT * FROM scooters WHERE deleted=false")
+	var scooters []model.Scooter
+	rows, err := s.db.Query(context.Background(),"SELECT * FROM scooters")
 
 	if err != nil {
 		return nil, err
 	}
 	scooter := model.Scooter{}
 	for rows.Next() {
-		err = rows.Scan(&scooter.Id, &scooter.Model, &scooter.Brand, &scooter.MaxDistance, &scooter.BatteryCapacity, &scooter.MaxWeight)
+		err = rows.Scan(&scooter.Id, &scooter.Model, &scooter.Brand, &scooter.MaxDistance, &scooter.Capacity, &scooter.MaxWeight)
 		if err != nil {
 			return nil, err
 		}
-		users = append(users, scooter)
+		scooters = append(scooters, scooter)
 	}
-	err = rows.Close()
-	if err != nil {
-		return nil, err
-	}
-	return &users, nil
+
+	return &scooters, nil
 }
 
 func (s ScooterRepository) Create(scooter *model.Scooter) (int, error) {
-	result, err := s.db.Exec("INSERT INTO scooters (id, model, brand, max_distance, battery_capacity, max_weight, created, updated) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)",
-		0, &scooter.Model, &scooter.Brand, &scooter.MaxDistance, &scooter.BatteryCapacity, &scooter.MaxWeight, time.Now(), time.Now())
+	res, err := s.db.Exec(context.Background(),"INSERT INTO scooters (id, model, brand, max_distance, battery_capacity, max_weight) VALUES ($1, $2, $3, $4, $5, $6)",
+		0, &scooter.Model, &scooter.Brand, &scooter.MaxDistance, &scooter.Capacity, &scooter.MaxWeight)
 	if err != nil {
 		if err != nil {
 			return 0, err
@@ -58,7 +55,7 @@ func (s ScooterRepository) Create(scooter *model.Scooter) (int, error) {
 		return 0, err
 	}
 
-	lastID, err := result.LastInsertId()
+	lastID := res.RowsAffected()
 	if err != nil {
 		return 0, err
 	}
@@ -68,61 +65,53 @@ func (s ScooterRepository) Create(scooter *model.Scooter) (int, error) {
 
 func (s ScooterRepository) GetByBrand(brand string) (*model.Scooter, error) {
 	scooter := model.Scooter{}
-	rows, err := s.db.Query("SELECT * FROM scooters WHERE brand=$1", brand)
+	rows, err := s.db.Query(context.Background(), "SELECT * FROM scooters WHERE brand=$1", brand)
 	if err != nil {
 		return nil, err
 	}
 	for rows.Next() {
-		err = rows.Scan(&scooter.Model, &scooter.Brand, &scooter.MaxDistance, &scooter.BatteryCapacity, &scooter.MaxWeight, &scooter.Created, &scooter.Updated)
+		err = rows.Scan(&scooter.Model, &scooter.Brand, &scooter.MaxDistance, &scooter.Capacity, &scooter.MaxWeight)
 		if err != nil {
 			return nil, err
 		}
 	}
-	err = rows.Close()
-	if err != nil {
-		return nil, err
-	}
+
 	return &scooter, nil
 }
 
 func (s ScooterRepository) GetByID(id int) (*model.Scooter, error) {
 	scooter := model.Scooter{}
-	rows, err := s.db.Query("SELECT * FROM users WHERE id=$1", id)
+	rows, err := s.db.Query(context.Background(), "SELECT * FROM users WHERE id=$1", id)
 	if err != nil {
 		return nil, err
 	}
 	for rows.Next() {
-		err = rows.Scan(&scooter.Id, &scooter.Model, &scooter.Brand, &scooter.MaxDistance, &scooter.BatteryCapacity, &scooter.MaxWeight, &scooter.Created, &scooter.Updated)
+		err = rows.Scan(&scooter.Id, &scooter.Model, &scooter.Brand, &scooter.MaxDistance, &scooter.Capacity, &scooter.MaxWeight)
 		if err != nil {
 			return nil, err
 		}
 	}
-	err = rows.Close()
-	if err != nil {
-		return nil, err
-	}
+
 	return &scooter, nil
 }
 
 func (s ScooterRepository) Update(scooter *model.Scooter) (int, error) {
-	result, err := s.db.Exec("UPDATE scooters SET model=$1, barnd=$2,max_distance=$3 battery_capacity=$4,max_weight=$5, updated=$4 WHERE id=$6",
-		&scooter.Model, &scooter.Brand, &scooter.MaxDistance, &scooter.BatteryCapacity, &scooter.MaxWeight, time.Now(), &scooter.Id)
+	res, err := s.db.Exec(context.Background(), "UPDATE scooters SET model=$1, barnd=$2,max_distance=$3 capacity=$4,max_weight=$5 WHERE id=$6",
+		&scooter.Model, &scooter.Brand, &scooter.MaxDistance, &scooter.Capacity, &scooter.MaxWeight, &scooter.Id)
 	if err != nil {
 		return 0, err
 	}
-	rowsAffected, err := result.RowsAffected()
-	if err != nil {
-		return 0, err
-	}
+
+	rowsAffected := res.RowsAffected()
 	return int(rowsAffected), nil
 }
 
 func (s ScooterRepository) Delete(id int) (int, error) {
-	result, err := s.db.Exec("UPDATE scooters SET deleted=true, updated=current_timestamp WHERE id=$1", id)
+	res, err := s.db.Exec(context.Background(), "`DELETE FROM scooters WHERE id=$1", id)
 	if err != nil {
 		return 0, err
 	}
-	rowsAffected, err := result.RowsAffected()
+	rowsAffected := res.RowsAffected()
 	if err != nil {
 		return 0, err
 	}

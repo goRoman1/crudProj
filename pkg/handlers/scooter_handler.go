@@ -25,14 +25,14 @@ type ScooterHandlerI interface {
 	Delete(w http.ResponseWriter, r *http.Request)
 }
 
-func (u ScooterHandler) Create(w http.ResponseWriter, r *http.Request) {
+func (s ScooterHandler) Create(w http.ResponseWriter, r *http.Request) {
 	var scooter model.Scooter
 	err := json.NewDecoder(r.Body).Decode(&scooter)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusNotAcceptable)
 		return
 	}
-	_,err = u.scooterService.UploadFromFile(&scooter)
+	_,err = s.scooterService.CreateScooter(&scooter)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusNotAcceptable)
 		return
@@ -40,14 +40,14 @@ func (u ScooterHandler) Create(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
-func (u ScooterHandler) GetAll(w http.ResponseWriter, r *http.Request) {
+func (s ScooterHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 	var scooters []model.Scooter
 	err := json.NewDecoder(r.Body).Decode(&scooters)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	_, err = u.scooterService.GetScooters()
+	_, err = s.scooterService.GetScooters()
 	w.WriteHeader(http.StatusOK)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusNotAcceptable)
@@ -57,14 +57,14 @@ func (u ScooterHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
-func (u ScooterHandler) GetById(w http.ResponseWriter, r *http.Request) {
+func (s ScooterHandler) GetById(w http.ResponseWriter, r *http.Request) {
 	var scooter model.Scooter
 	err := json.NewDecoder(r.Body).Decode(&scooter)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusNotAcceptable)
 		return
 	}
-	_, err = u.scooterService.GetScooterByID(scooter.Id)
+	_, err = s.scooterService.GetScooterByID(scooter.Id)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusNotAcceptable)
 		return
@@ -72,14 +72,14 @@ func (u ScooterHandler) GetById(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
-func (u ScooterHandler) GetByModel(w http.ResponseWriter, r *http.Request) {
+func (s ScooterHandler) GetByModel(w http.ResponseWriter, r *http.Request) {
 	var scooter model.Scooter
 	err := json.NewDecoder(r.Body).Decode(&scooter)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusNotAcceptable)
 		return
 	}
-	_, err = u.scooterService.GetScootersByBrand(scooter.Model)
+	_, err = s.scooterService.GetScootersByBrand(scooter.Model)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusNotAcceptable)
 		return
@@ -87,14 +87,14 @@ func (u ScooterHandler) GetByModel(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
-func (u ScooterHandler) EditInfo(w http.ResponseWriter, r *http.Request) {
+func (s ScooterHandler) EditInfo(w http.ResponseWriter, r *http.Request) {
 	var scooter model.Scooter
 	err := json.NewDecoder(r.Body).Decode(&scooter)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusNotAcceptable)
 		return
 	}
-	_,err = u.scooterService.EditScooter(&scooter)
+	_,err = s.scooterService.EditScooter(&scooter)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusNotAcceptable)
 		return
@@ -102,14 +102,14 @@ func (u ScooterHandler) EditInfo(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
-func (u ScooterHandler) Delete(w http.ResponseWriter, r *http.Request) {
+func (s ScooterHandler) Delete(w http.ResponseWriter, r *http.Request) {
 	var scooter model.Scooter
 	err := json.NewDecoder(r.Body).Decode(&scooter)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusNotAcceptable)
 		return
 	}
-	_,err = u.scooterService.DeleteScooter(scooter.Id)
+	_,err = s.scooterService.DeleteScooter(scooter.Id)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusNotAcceptable)
 		return

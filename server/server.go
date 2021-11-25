@@ -21,22 +21,24 @@ func Run()error{
 	cfg := config.Get()
 	pgDB :=  pgdb.Dial(cfg)
 
+	fileRepository := repository.NewFileRepository(pgDB)
+	fileService := services.NewFileService(fileRepository)
+	fileHandler := handlers.NewFileHandler(fileService)
 
-
-	scooterRepository := repository.NewFileRepository(pgDB)
+	scooterRepository := repository.NewScooterRepository(pgDB)
 	scooterService := services.NewScooterService(scooterRepository)
 	scooterHandler := handlers.NewScooterHandler(scooterService)
 
 	r := mux.NewRouter()
-	r.HandleFunc("/upload", handlers.UploadFile)
-
+	r.HandleFunc("/upload", fileHandler.UploadFile).Methods("POST")
+	r.HandleFunc("/test", fileHandler.Test).Methods("POST")
 
 	r.HandleFunc("/create", scooterHandler.Create).Methods("POST")
-	r.HandleFunc("/users", scooterHandler.GetAll).Methods("GET")
-	r.HandleFunc("/profile/{id}", scooterHandler.GetById).Methods("GET")
-	r.HandleFunc("/profile/{email}", scooterHandler.GetByModel).Methods("GET")
+	r.HandleFunc("/scooters", scooterHandler.GetAll).Methods("GET")
+	r.HandleFunc("/scooter/{id}", scooterHandler.GetById).Methods("GET")
+	r.HandleFunc("/scooter/{brand}", scooterHandler.GetByModel).Methods("GET")
 	r.HandleFunc("/edit", scooterHandler.EditInfo).Methods("PUT")
-	r.HandleFunc("/login", scooterHandler.Delete).Methods("POST")
+	r.HandleFunc("/delete/{id}", scooterHandler.Delete).Methods("DELETE")
 
 	err := r.Walk(func(route *mux.Route, router *mux.Router, ancestors []*mux.Route) error {
 		pathTemplate, err := route.GetPathTemplate()
@@ -69,7 +71,7 @@ func Run()error{
 
 	http.Handle("/", r)
 	srv := &http.Server{
-		Addr:         "127.0.1.1:8080",
+		Addr:         "localhost:8080",
 		WriteTimeout: time.Second * 30,
 		ReadTimeout:  time.Second * 30,
 		IdleTimeout:  time.Second * 60,
@@ -95,5 +97,6 @@ func Run()error{
 	log.Println("shutting down")
 	os.Exit(0)
 	return nil
+
 }
 
