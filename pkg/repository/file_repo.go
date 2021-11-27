@@ -11,8 +11,7 @@ import (
 	"io/ioutil"
 	"mime/multipart"
 	"os"
-	"strconv"
-	"sync"
+	"strings"
 )
 
 type FileRepository struct {
@@ -81,18 +80,27 @@ func (f FileRepository)Insert(scooter *model.Scooter) error {
 }
 
 func (f FileRepository) InsertToDb(scooters []model.Scooter) error {
-	var wg sync.WaitGroup
-	wg.Add(len(scooters))
-	defer wg.Done()
-	for i := 0; i < len(scooters); i++ {
-		fmt.Println("Widget Brand: " + scooters[i].Brand)
-		fmt.Println("Widget Model: " + scooters[i].Model)
-		fmt.Println("Widget MaxDistance: " + strconv.Itoa(scooters[i].MaxDistance))
-		go f.Insert(&scooters[i])
+	valueStrings := make([]string, 0, len(scooters))
+	valueArgs := make([]interface{}, 0, len(scooters) * 7)
+	for i, scooter := range scooters {
+		valueStrings = append(valueStrings, fmt.Sprintf("($%d, $%d, $%d, $%d, $%d, $%d, $%d)", i*7+1, i*7+2, i*7+3, i*7+4, i*7+5, i*7+6, i*7+7))
+		valueArgs = append(valueArgs, scooter.Id)
+		valueArgs = append(valueArgs, scooter.Model)
+		valueArgs = append(valueArgs, scooter.Brand)
+		valueArgs = append(valueArgs, scooter.Capacity)
+		valueArgs = append(valueArgs, scooter.MaxWeight)
+		valueArgs = append(valueArgs, scooter.MaxDistance)
+		valueArgs = append(valueArgs, scooter.Serial)
+	}
+
+	stmt := fmt.Sprintf("INSERT INTO scooters(id, model, brand, capacity, max_weight, max_distance, serial) VALUES %s", strings.Join(valueStrings, ","))
+	if _, err := f.db.Exec(context.Background(),stmt, valueArgs...)
+		err != nil {
+		fmt.Println("Unable to insert due to: ", err)
+		return err
 	}
 	return nil
 }
-
 func (f FileRepository)Test(scooter *model.Test) error {
 	if _, err := f.db.Exec(context.Background(),
 		"INSERT INTO test(id, model, brand) VALUES($1, $2, $3)",

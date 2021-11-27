@@ -18,11 +18,11 @@ func NewScooterRepository(db *pgx.Conn) *ScooterRepository {
 }
 
 type ScooterRepositoryI interface {
-	Create(user *model.Scooter) (int, error)
+	Create(scooter *model.Scooter) (int, error)
 	GetAll() (*[]model.Scooter, error)
 	GetByBrand(brand string) (*model.Scooter, error)
 	GetByID(id int) (*model.Scooter, error)
-	Update(user *model.Scooter) (int, error)
+	Update(scooter *model.Scooter) (int, error)
 	Delete(id int) (int, error)
 }
 
@@ -46,7 +46,7 @@ func (s ScooterRepository) GetAll() (*[]model.Scooter, error) {
 }
 
 func (s ScooterRepository) Create(scooter *model.Scooter) (int, error) {
-	res, err := s.db.Exec(context.Background(),"INSERT INTO scooters (id, model, brand, max_distance, battery_capacity, max_weight) VALUES ($1, $2, $3, $4, $5, $6)",
+	res, err := s.db.Exec(context.Background(),"INSERT INTO scooters (id, model, brand, max_distance, capacity, max_weight) VALUES ($1, $2, $3, $4, $5, $6)",
 		0, &scooter.Model, &scooter.Brand, &scooter.MaxDistance, &scooter.Capacity, &scooter.MaxWeight)
 	if err != nil {
 		if err != nil {
