@@ -1,16 +1,16 @@
 package services
 
 import (
-	"crudProj/model"
+	"crudProj/entities"
 	"crudProj/pkg/repository"
 )
 
 type ScooterServiceI interface {
-	CreateScooter(scooter *model.Scooter) (int, error)
-	GetScooters() (*[]model.Scooter, error)
-	GetScooterByID(scooterID int) (*model.Scooter, error)
-	GetScootersByBrand(brand string) (*model.Scooter, error)
-	EditScooter(scooter *model.Scooter) (int, error)
+	CreateScooter(scooter *entities.Scooter) (int, error)
+	GetScooters() (*[]entities.Scooter, error)
+	GetScooterByID(scooterID int) (*entities.Scooter, error)
+	GetScootersByBrand(brand string) (*entities.Scooter, error)
+	EditScooter(scooter *entities.Scooter) (int, error)
 	DeleteScooter(id int) (int, error)
 }
 
@@ -24,7 +24,7 @@ type ScooterService struct {
 	scooterRepository repository.ScooterRepositoryI
 }
 
-func (s ScooterService) GetScooters() (*[]model.Scooter, error) {
+func (s ScooterService) GetScooters() (*[]entities.Scooter, error) {
 	scooters, err := s.scooterRepository.GetAll()
 	if err != nil {
 		return nil, err
@@ -32,7 +32,7 @@ func (s ScooterService) GetScooters() (*[]model.Scooter, error) {
 	return scooters, nil
 }
 
-func (s ScooterService) CreateScooter(scooter *model.Scooter) (int, error) {
+func (s ScooterService) CreateScooter(scooter *entities.Scooter) (int, error) {
 	lastID, err := s.scooterRepository.Create(scooter)
 	if err != nil {
 		return 0, err
@@ -40,7 +40,7 @@ func (s ScooterService) CreateScooter(scooter *model.Scooter) (int, error) {
 	return lastID, nil
 }
 
-func (s ScooterService) GetScooterByID(scooterID int) (*model.Scooter, error) {
+func (s ScooterService) GetScooterByID(scooterID int) (*entities.Scooter, error) {
 	scooter, err := s.scooterRepository.GetByID(scooterID)
 	if err != nil {
 		return nil, err
@@ -48,7 +48,7 @@ func (s ScooterService) GetScooterByID(scooterID int) (*model.Scooter, error) {
 	return scooter, nil
 }
 
-func (s ScooterService) GetScootersByBrand(brand string) (*model.Scooter, error) {
+func (s ScooterService) GetScootersByBrand(brand string) (*entities.Scooter, error) {
 	scooter, err := s.scooterRepository.GetByBrand(brand)
 	if err != nil {
 		return nil, err
@@ -56,7 +56,7 @@ func (s ScooterService) GetScootersByBrand(brand string) (*model.Scooter, error)
 	return scooter, nil
 }
 
-func (s ScooterService) EditScooter(scooter *model.Scooter) (int, error) {
+func (s ScooterService) EditScooter(scooter *entities.Scooter) (int, error) {
 	rowsAffected, err := s.scooterRepository.Update(scooter)
 	if err != nil {
 		return 0, err

@@ -1,14 +1,14 @@
 package services
 
 import (
-	"crudProj/model"
+	"crudProj/entities"
 	"crudProj/pkg/repository"
 	"mime/multipart"
 )
 
 type FileServiceI interface {
 	InsertScootersToDb(file multipart.File) string
-	TestService(scooter *model.Test) error
+	TestService(scooter *entities.Test) error
 }
 
 func NewFileService(fileRepository repository.FileRepositoryI) *FileService {
@@ -21,7 +21,7 @@ type FileService struct {
 	fileRepository repository.FileRepositoryI
 }
 
-func (f FileService) TestService(scooter *model.Test) error {
+func (f FileService) TestService(scooter *entities.Test) error {
 	err:= f.fileRepository.Test(scooter)
 	if err != nil {
 		return err

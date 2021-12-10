@@ -2,20 +2,20 @@ package pgdb
 
 import (
 	"context"
-	"crudProj/config"
+	"crudProj/configs"
 	"fmt"
 	"github.com/jackc/pgx/v4"
 	_ "github.com/lib/pq"
 	"os"
 )
 
-func Dial(cfg *config.Config)*pgx.Conn {
+func Dial(cfg *configs.Config)*pgx.Conn {
 	var err error
 	if cfg.DriverName == "" {
 		return nil
 	}
 
-	pgUrl := fmt.Sprintf("%s://%s:%s@%s:%s/%s", cfg.DriverName, cfg.DbUser,cfg.DbPassword,cfg.DbHost, cfg.DbPort, cfg.DbName)
+	pgUrl := fmt.Sprintf("%s://%s:%s@%s:%s/%s", cfg.DriverName, cfg.DbUser, cfg.DbPassword,cfg.DbHost, cfg.DbPort, cfg.DbName)
 //	urlExample := "postgres://user:mypassword@localhost:5432/postgres"
 	conn, err := pgx.Connect(context.Background(), pgUrl)
 	if err != nil {

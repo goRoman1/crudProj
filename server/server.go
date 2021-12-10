@@ -2,7 +2,7 @@ package server
 
 import (
 	"context"
-	"crudProj/config"
+	"crudProj/configs"
 	"crudProj/pgdb"
 	"crudProj/pkg/handlers"
 	"crudProj/pkg/repository"
@@ -18,7 +18,7 @@ import (
 )
 
 func Run()error{
-	cfg := config.Get()
+	cfg := configs.Get()
 	pgDB :=  pgdb.Dial(cfg)
 
 	fileRepository := repository.NewFileRepository(pgDB)

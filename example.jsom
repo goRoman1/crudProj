@@ -1,0 +1,30 @@
+{
+  "models": [
+    {
+      "model_name": "model1",
+      "max_weight": "3",
+      "payment_type": "10",
+      "speed": "20",
+      "serial_number": [
+        1,2,2,3,4
+      ]
+    },
+    {
+      "model_name": "model2",
+      "max_weight": "45",
+      "payment_type": "101",
+      "speed": "26",
+      "serial_number": [
+        54,67,56,8
+      ]
+    },{
+      "model_name": "model3",
+      "max_weight": "3",
+      "payment_type": "10",
+      "speed": "20",
+      "serial_number": [
+        5,11,22,33
+      ]
+    }
+  ]
+  }

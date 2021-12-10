@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"crudProj/model"
+	"crudProj/entities"
 	"crudProj/pkg/services"
 	"encoding/json"
 	"net/http"
@@ -26,7 +26,7 @@ type ScooterHandlerI interface {
 }
 
 func (s ScooterHandler) Create(w http.ResponseWriter, r *http.Request) {
-	var scooter model.Scooter
+	var scooter entities.Scooter
 	err := json.NewDecoder(r.Body).Decode(&scooter)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusNotAcceptable)
@@ -41,7 +41,7 @@ func (s ScooterHandler) Create(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s ScooterHandler) GetAll(w http.ResponseWriter, r *http.Request) {
-	var scooters []model.Scooter
+	var scooters []entities.Scooter
 	err := json.NewDecoder(r.Body).Decode(&scooters)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -58,7 +58,7 @@ func (s ScooterHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s ScooterHandler) GetById(w http.ResponseWriter, r *http.Request) {
-	var scooter model.Scooter
+	var scooter entities.Scooter
 	err := json.NewDecoder(r.Body).Decode(&scooter)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusNotAcceptable)
@@ -73,7 +73,7 @@ func (s ScooterHandler) GetById(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s ScooterHandler) GetByModel(w http.ResponseWriter, r *http.Request) {
-	var scooter model.Scooter
+	var scooter entities.Scooter
 	err := json.NewDecoder(r.Body).Decode(&scooter)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusNotAcceptable)
@@ -88,7 +88,7 @@ func (s ScooterHandler) GetByModel(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s ScooterHandler) EditInfo(w http.ResponseWriter, r *http.Request) {
-	var scooter model.Scooter
+	var scooter entities.Scooter
 	err := json.NewDecoder(r.Body).Decode(&scooter)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusNotAcceptable)
@@ -103,7 +103,7 @@ func (s ScooterHandler) EditInfo(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s ScooterHandler) Delete(w http.ResponseWriter, r *http.Request) {
-	var scooter model.Scooter
+	var scooter entities.Scooter
 	err := json.NewDecoder(r.Body).Decode(&scooter)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusNotAcceptable)

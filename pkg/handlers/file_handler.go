@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"crudProj/model"
+	"crudProj/entities"
 	"crudProj/pkg/services"
 	"encoding/json"
 	"fmt"
@@ -25,7 +25,7 @@ type FileHandlerI interface {
 }
 
 func (f FileHandler) Test(w http.ResponseWriter, r *http.Request) {
-	var scooter model.Test
+	var scooter entities.Test
 	err := json.NewDecoder(r.Body).Decode(&scooter)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusNotAcceptable)

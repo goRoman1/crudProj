@@ -2,7 +2,7 @@ package repository
 
 import (
 	"context"
-	"crudProj/model"
+	"crudProj/entities"
 	"github.com/jackc/pgx/v4"
 	_ "github.com/lib/pq"
 )
@@ -18,22 +18,22 @@ func NewScooterRepository(db *pgx.Conn) *ScooterRepository {
 }
 
 type ScooterRepositoryI interface {
-	Create(scooter *model.Scooter) (int, error)
-	GetAll() (*[]model.Scooter, error)
-	GetByBrand(brand string) (*model.Scooter, error)
-	GetByID(id int) (*model.Scooter, error)
-	Update(scooter *model.Scooter) (int, error)
+	Create(scooter *entities.Scooter) (int, error)
+	GetAll() (*[]entities.Scooter, error)
+	GetByBrand(brand string) (*entities.Scooter, error)
+	GetByID(id int) (*entities.Scooter, error)
+	Update(scooter *entities.Scooter) (int, error)
 	Delete(id int) (int, error)
 }
 
-func (s ScooterRepository) GetAll() (*[]model.Scooter, error) {
-	var scooters []model.Scooter
+func (s ScooterRepository) GetAll() (*[]entities.Scooter, error) {
+	var scooters []entities.Scooter
 	rows, err := s.db.Query(context.Background(),"SELECT * FROM scooters")
 
 	if err != nil {
 		return nil, err
 	}
-	scooter := model.Scooter{}
+	scooter := entities.Scooter{}
 	for rows.Next() {
 		err = rows.Scan(&scooter.Id, &scooter.Model, &scooter.Brand, &scooter.MaxDistance, &scooter.Capacity, &scooter.MaxWeight)
 		if err != nil {
@@ -45,8 +45,8 @@ func (s ScooterRepository) GetAll() (*[]model.Scooter, error) {
 	return &scooters, nil
 }
 
-func (s ScooterRepository) Create(scooter *model.Scooter) (int, error) {
-	res, err := s.db.Exec(context.Background(),"INSERT INTO scooters (id, model, brand, max_distance, capacity, max_weight) VALUES ($1, $2, $3, $4, $5, $6)",
+func (s ScooterRepository) Create(scooter *entities.Scooter) (int, error) {
+	res, err := s.db.Exec(context.Background(),"INSERT INTO scooters (id, entities, brand, max_distance, capacity, max_weight) VALUES ($1, $2, $3, $4, $5, $6)",
 		0, &scooter.Model, &scooter.Brand, &scooter.MaxDistance, &scooter.Capacity, &scooter.MaxWeight)
 	if err != nil {
 		if err != nil {
@@ -63,8 +63,8 @@ func (s ScooterRepository) Create(scooter *model.Scooter) (int, error) {
 	return int(lastID), nil
 }
 
-func (s ScooterRepository) GetByBrand(brand string) (*model.Scooter, error) {
-	scooter := model.Scooter{}
+func (s ScooterRepository) GetByBrand(brand string) (*entities.Scooter, error) {
+	scooter := entities.Scooter{}
 	rows, err := s.db.Query(context.Background(), "SELECT * FROM scooters WHERE brand=$1", brand)
 	if err != nil {
 		return nil, err
@@ -79,8 +79,8 @@ func (s ScooterRepository) GetByBrand(brand string) (*model.Scooter, error) {
 	return &scooter, nil
 }
 
-func (s ScooterRepository) GetByID(id int) (*model.Scooter, error) {
-	scooter := model.Scooter{}
+func (s ScooterRepository) GetByID(id int) (*entities.Scooter, error) {
+	scooter := entities.Scooter{}
 	rows, err := s.db.Query(context.Background(), "SELECT * FROM users WHERE id=$1", id)
 	if err != nil {
 		return nil, err
@@ -95,8 +95,8 @@ func (s ScooterRepository) GetByID(id int) (*model.Scooter, error) {
 	return &scooter, nil
 }
 
-func (s ScooterRepository) Update(scooter *model.Scooter) (int, error) {
-	res, err := s.db.Exec(context.Background(), "UPDATE scooters SET model=$1, barnd=$2,max_distance=$3 capacity=$4,max_weight=$5 WHERE id=$6",
+func (s ScooterRepository) Update(scooter *entities.Scooter) (int, error) {
+	res, err := s.db.Exec(context.Background(), "UPDATE scooters SET entities=$1, barnd=$2,max_distance=$3 capacity=$4,max_weight=$5 WHERE id=$6",
 		&scooter.Model, &scooter.Brand, &scooter.MaxDistance, &scooter.Capacity, &scooter.MaxWeight, &scooter.Id)
 	if err != nil {
 		return 0, err
