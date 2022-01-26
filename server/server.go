@@ -25,20 +25,8 @@ func Run()error{
 	fileService := services.NewFileService(fileRepository)
 	fileHandler := handlers.NewFileHandler(fileService)
 
-	scooterRepository := repository.NewScooterRepository(pgDB)
-	scooterService := services.NewScooterService(scooterRepository)
-	scooterHandler := handlers.NewScooterHandler(scooterService)
-
 	r := mux.NewRouter()
 	r.HandleFunc("/upload", fileHandler.UploadFile).Methods("POST")
-	r.HandleFunc("/test", fileHandler.Test).Methods("POST")
-
-	r.HandleFunc("/create", scooterHandler.Create).Methods("POST")
-	r.HandleFunc("/scooters", scooterHandler.GetAll).Methods("GET")
-	r.HandleFunc("/scooter/{id}", scooterHandler.GetById).Methods("GET")
-	r.HandleFunc("/scooter/{brand}", scooterHandler.GetByModel).Methods("GET")
-	r.HandleFunc("/edit", scooterHandler.EditInfo).Methods("PUT")
-	r.HandleFunc("/delete/{id}", scooterHandler.Delete).Methods("DELETE")
 
 	err := r.Walk(func(route *mux.Route, router *mux.Router, ancestors []*mux.Route) error {
 		pathTemplate, err := route.GetPathTemplate()

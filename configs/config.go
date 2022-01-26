@@ -17,8 +17,6 @@ type Config struct {
 	DbPort    				string
 }
 
-
-
 func Get() *Config {
 	err := godotenv.Load()
 	if err != nil {

@@ -16,7 +16,7 @@ type Test struct {
 	Model	string  `json:"model"`
 }
 
-type Scooters struct {
+type Scooter struct {
 	Id		 	 int	`json:"id"`
 	ModelId  	 int	`json:"model_id"`
 	OwnerId  	 int	`json:"owner_id"`

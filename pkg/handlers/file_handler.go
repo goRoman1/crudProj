@@ -1,9 +1,7 @@
 package handlers
 
 import (
-	"crudProj/entities"
 	"crudProj/pkg/services"
-	"encoding/json"
 	"fmt"
 	"net/http"
 	"os"
@@ -24,20 +22,6 @@ type FileHandlerI interface {
 	Test(w http.ResponseWriter, r *http.Request)
 }
 
-func (f FileHandler) Test(w http.ResponseWriter, r *http.Request) {
-	var scooter entities.Test
-	err := json.NewDecoder(r.Body).Decode(&scooter)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusNotAcceptable)
-		return
-	}
-	err = f.fileService.TestService(&scooter)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusNotAcceptable)
-		return
-	}
-	w.WriteHeader(http.StatusOK)
-}
 
 func (f FileHandler)UploadFile(w http.ResponseWriter, r *http.Request){
 	fmt.Println("File Upload Endpoint Hit")
